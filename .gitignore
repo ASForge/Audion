@@ -1,0 +1,14 @@
+# File hasil build dan cache Gradle
+.gradle/
+build/
+app/build/
+out/
+
+# Konfigurasi lokal mesin (path SDK, dll.)
+local.properties
+
+# File editor / sistem
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
