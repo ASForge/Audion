@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Audion</string>
+
+    <!-- Tombol utama -->
+    <string name="btn_scan_folders">Pindai Semua Folder Musik</string>
+    <string name="cd_scan_folders">Pindai semua folder musik di penyimpanan internal dan kartu SD</string>
+    <string name="btn_configure_gestures">Atur Gestur</string>
+    <string name="cd_configure_gestures">Atur fungsi gestur dua jari dan ketuk dua kali</string>
+
+    <!-- Status dan metadata lagu -->
+    <string name="status_initial">Tekan tombol pindai untuk memuat daftar folder.</string>
+    <string name="track_title_empty">Judul Lagu: Belum ada lagu diputar</string>
+    <string name="track_artist_empty">Penyanyi: -</string>
+    <string name="track_album_empty">Album: -</string>
+
+    <!-- Tombol kontrol pemutar -->
+    <string name="btn_prev">Prev</string>
+    <string name="cd_prev">Lagu sebelumnya</string>
+    <string name="btn_rew">Rew</string>
+    <string name="cd_rew">Mundur 10 detik</string>
+    <string name="btn_play">Play</string>
+    <string name="btn_pause">Pause</string>
+    <string name="cd_play_track">Putar lagu %1$s</string>
+    <string name="cd_pause_track">Jeda lagu %1$s</string>
+    <string name="btn_fwd">Fwd</string>
+    <string name="cd_fwd">Maju 10 detik</string>
+    <string name="btn_next">Next</string>
+    <string name="cd_next">Lagu berikutnya</string>
+
+    <!-- Panel gestur -->
+    <string name="gesture_pad_text">Panel Gestur: Ketuk 2 jari, geser 2 jari kiri/kanan, atau ketuk 2 kali</string>
+    <string name="cd_gesture_pad">Panel gestur. Gunakan ketuk dua jari, geser dua jari ke kiri atau kanan, atau ketuk dua kali untuk menjalankan aksi yang diatur.</string>
+</resources>
