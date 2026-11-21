@@ -10,6 +10,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.audion.player.adapter.FolderAdapter
 import com.audion.player.databinding.ActivityMainBinding
+import com.audion.player.engine.AudioPlayerEngine
+import com.audion.player.model.AudioTrack
 import com.audion.player.model.MusicFolder
 import com.audion.player.scanner.MusicFolderScanner
 import kotlinx.coroutines.launch
@@ -19,6 +21,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var scanner: MusicFolderScanner
     private lateinit var folderAdapter: FolderAdapter
+    private lateinit var playerEngine: AudioPlayerEngine
 
     private val audioPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -36,18 +39,78 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         scanner = MusicFolderScanner(this)
+
+        playerEngine = AudioPlayerEngine(this) { track, isPlaying, folderName ->
+            updatePlayerUi(track, isPlaying, folderName)
+        }
+
         folderAdapter = FolderAdapter { selectedFolder ->
-            onFolderSelected(selectedFolder)
+            playerEngine.playFolder(selectedFolder, startIndex = 0)
         }
 
         binding.rvFolders.layoutManager = LinearLayoutManager(this)
         binding.rvFolders.adapter = folderAdapter
+
+        setupControls()
 
         binding.btnScanFolders.setOnClickListener {
             checkPermissionAndScan()
         }
 
         checkPermissionAndScan()
+    }
+
+    private fun setupControls() {
+        binding.btnPlayPause.setOnClickListener {
+            playerEngine.togglePlayPause()
+        }
+
+        binding.btnPrevious.setOnClickListener {
+            playerEngine.previousTrack()
+        }
+
+        binding.btnNext.setOnClickListener {
+            playerEngine.nextTrack()
+        }
+
+        binding.btnRewind.setOnClickListener {
+            playerEngine.rewind()
+            binding.tvStatus.text = "Mundur 10 detik"
+        }
+
+        binding.btnForward.setOnClickListener {
+            playerEngine.forward()
+            binding.tvStatus.text = "Maju 10 detik"
+        }
+    }
+
+    private fun updatePlayerUi(track: AudioTrack?, isPlaying: Boolean, folderName: String?) {
+        if (track == null) {
+            binding.tvTrackTitle.text = "Judul Lagu: Belum ada lagu diputar"
+            binding.tvTrackArtist.text = "Penyanyi: -"
+            binding.tvTrackAlbum.text = "Album: -"
+            binding.btnPlayPause.text = "Play"
+            binding.btnPlayPause.contentDescription = "Putar lagu"
+            return
+        }
+
+        binding.tvTrackTitle.text = "Judul Lagu: ${track.title}"
+        binding.tvTrackArtist.text = "Penyanyi: ${track.artist}"
+        binding.tvTrackAlbum.text = "Album: ${track.album}"
+
+        if (isPlaying) {
+            binding.btnPlayPause.text = "Pause"
+            binding.btnPlayPause.contentDescription = "Jeda lagu ${track.title}"
+            if (!folderName.isNullOrBlank()) {
+                binding.tvStatus.text = "Memutar dari folder $folderName"
+            }
+        } else {
+            binding.btnPlayPause.text = "Play"
+            binding.btnPlayPause.contentDescription = "Putar lagu ${track.title}"
+            if (!folderName.isNullOrBlank()) {
+                binding.tvStatus.text = "Dijeda di folder $folderName"
+            }
+        }
     }
 
     private fun checkPermissionAndScan() {
@@ -81,9 +144,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun onFolderSelected(folder: MusicFolder) {
-        val firstTrack = folder.tracks.firstOrNull() ?: return
-        binding.tvNowPlaying.text =
-            "Folder: ${folder.folderName}\nJudul: ${firstTrack.title}\nPenyanyi: ${firstTrack.artist}\nAlbum: ${firstTrack.album}"
+    override fun onDestroy() {
+        playerEngine.release()
+        super.onDestroy()
     }
 }
